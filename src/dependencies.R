@@ -1,0 +1,5 @@
+install.packages("dplyr")
+install.packages("caret")
+install.packages("pracma")
+install.packages("kernlab")
+install.packages("lattice")
