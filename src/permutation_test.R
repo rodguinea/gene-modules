@@ -3,6 +3,8 @@ library(caret)
 library(pracma)
 library(kernlab)
 library(lattice)
+library(foreach)
+library(doParallel)
 
 test = c("counts_mauratus_liver", "counts_mauratus_kidney",
 "counts_fdamarensis_brain", "counts_fdamarensis_kidney",
@@ -11,7 +13,10 @@ test = c("counts_mauratus_liver", "counts_mauratus_kidney",
 "counts_hsapiens_kidney", "counts_hsapiens_heart",
 "counts_hsapiens_lung")
 
-permutation_test <- function(wd,dw, samples, tries = 10){
+# wd is working directory
+# dw is download directory 
+
+permutation_test <- function(wd, dw, samples, tries = 10){
 
 	setwd(wd)
 
@@ -39,8 +44,10 @@ permutation_test <- function(wd,dw, samples, tries = 10){
 	names(c_train) <- c("lifespan")
 	rownames(c_train) <- rownames(z_train)
 
-
-	for(counter in 1:10){
+	cl <- parallel::makeCluster(28)
+	doParallel::registerDoParallel(cl)
+	
+	foreach(counter = 1:tries, .combine = 'c') %dopar %{
 		
 		list_ranks <- data.frame(cluster_color = character(), signature = character(), r2_svm = numeric(), sigma = numeric(), C = numeric())
 
@@ -51,7 +58,7 @@ permutation_test <- function(wd,dw, samples, tries = 10){
 
 			target <- c_train[,1]
 
-			n_genes <- nrow(scores[scores$cluster_color == pig,])
+			n_genes <- length(unlist(strsplit(as.character(scores[scores$cluster_color == pig, ]$signature),  ",")))
 
 			sig <- sample(colnames(z_norm), n_genes)
 
@@ -77,5 +84,7 @@ permutation_test <- function(wd,dw, samples, tries = 10){
 	setwd(dw)
 
 	write.csv(permutation_table, "permutation_table_X10.csv")
+	
+	parallel::stopCluster(cl)
 
 }
