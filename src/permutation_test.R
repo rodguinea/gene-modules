@@ -4,8 +4,14 @@ library(pracma)
 library(kernlab)
 library(lattice)
 
+test = c("counts_mauratus_liver", "counts_mauratus_kidney",
+"counts_fdamarensis_brain", "counts_fdamarensis_kidney",
+"counts_fdamarensis_liver", "counts_uamericanus_liver", "counts_uamericanus_kidney",
+"counts_uamericanus_brain", "counts_hsapiens_liver",
+"counts_hsapiens_kidney", "counts_hsapiens_heart",
+"counts_hsapiens_lung")
 
-permutation_test <- function(wd,dw){ 
+permutation_test <- function(wd,dw, samples, tries = 10){
 
 	setwd(wd)
 
@@ -19,12 +25,7 @@ permutation_test <- function(wd,dw){
 
 	permutation_table <- data.frame(cluster_color = character(), signature = character(), r2_svm = numeric(), sigma = numeric(), C = numeric())
 
-	test_rows <- which(rownames(z) %in% c("counts_mauratus_liver", "counts_mauratus_kidney", 
-										  "counts_fdamarensis_brain", "counts_fdamarensis_kidney", 
-										  "counts_fdamarensis_liver", "counts_uamericanus_liver", "counts_uamericanus_kidney", 
-										  "counts_uamericanus_brain", "counts_hsapiens_liver", 
-										  "counts_hsapiens_kidney", "counts_hsapiens_heart", 
-										  "counts_hsapiens_lung"))
+	test_rows <- which(rownames(z) %in% samples)
 
 	z_test <- z[test_rows, ]
 	c_test <- c[test_rows, ]

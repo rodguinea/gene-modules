@@ -39,3 +39,4 @@ rsconnect/
 .rstudio
 src/.rstudio
 
+.idea
