@@ -5,7 +5,7 @@ library(kernlab)
 library(lattice)
 
 
-permutation_test <- function(wd,dw){ 
+permutation_test <- function(wd,dw, iter){ 
 
 	setwd(wd)
 
@@ -39,7 +39,7 @@ permutation_test <- function(wd,dw){
 	rownames(c_train) <- rownames(z_train)
 
 
-	for(counter in 1:10){
+	for(counter in 1:iter){
 		
 		list_ranks <- data.frame(cluster_color = character(), signature = character(), r2_svm = numeric(), sigma = numeric(), C = numeric())
 
@@ -50,7 +50,7 @@ permutation_test <- function(wd,dw){
 
 			target <- c_train[,1]
 
-			n_genes <- nrow(scores[scores$cluster_color == pig,])
+			n_genes <- length(unlist(strsplit(as.character(scores[scores$cluster_color == pig, ]$signature),  ",")))
 
 			sig <- sample(colnames(z_norm), n_genes)
 
