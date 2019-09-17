@@ -3,6 +3,8 @@ library(caret)
 library(pracma)
 library(kernlab)
 library(lattice)
+library(foreach)
+library(doParallel)
 
 test = c("counts_mauratus_liver", "counts_mauratus_kidney",
 "counts_fdamarensis_brain", "counts_fdamarensis_kidney",
